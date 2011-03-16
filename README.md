@@ -3,13 +3,13 @@ NodeJS Locale Bindings
 
 The goal of this repo is to bind the common used functions from **locale.h**.
 
-The next code shows how it will look like in the future. This actually works, but it's
-the only method and constants supported for now (`setlocale`).
+The next code shows what you can do for now.
 
     var locale = require("locale");
     
-    if (locale.setlocale(locale.LC_ALL, "en_US.utf8")) {
-    	//...
+    if (locale.setlocale(locale.LC_ALL, "pt_PT.utf8")) {
+    	console.log("Monetary: " + locale.strfmon("%i", 1234.56));
+    	console.log("    Date: " + locale.strftime("%A, %b %d %Y %H:%M:%S", new Date()));
     }
 
 ## Installation
