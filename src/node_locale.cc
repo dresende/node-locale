@@ -129,6 +129,31 @@ static Handle<Value> node_gettext(const Arguments& args) {
 }
 
 /**
+ * dgettext(domain, text)
+ *
+ * Get converted <text> using <domain>.
+ *
+ **/
+static Handle<Value> node_dgettext(const Arguments& args) {
+	HandleScope scope;
+
+	if (args.Length() < 2) {
+		return ThrowException(Exception::TypeError(String::New("Missing argument")));
+	}
+	if (!args[0]->IsString()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 1 must be a domain string")));
+	}
+	if (!args[1]->IsString()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 2 must be a string")));
+	}
+
+	String::Utf8Value domain(args[0]->ToString());
+	String::Utf8Value text(args[1]->ToString());
+
+	return scope.Close(String::New(dgettext(*domain, *text)));
+}
+
+/**
  * strfmon(format, value)
  *
  * Format monetary <value> using <format> specification.
@@ -280,6 +305,7 @@ void Init(Handle<Object> target) {
 	NODE_SET_METHOD(target, "bindtextdomain", node_bindtextdomain);
 	NODE_SET_METHOD(target, "textdomain", node_textdomain);
 	NODE_SET_METHOD(target, "gettext", node_gettext);
+	NODE_SET_METHOD(target, "dgettext", node_dgettext);
 	NODE_SET_METHOD(target, "strfmon", node_strfmon);
 	NODE_SET_METHOD(target, "strftime", node_strftime);
 	NODE_SET_METHOD(target, "strptime", node_strptime);

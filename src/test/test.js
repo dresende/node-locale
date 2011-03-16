@@ -29,8 +29,10 @@ try {
 	console.dir(locale.strptime(dts, "%D %T"));
 
 	console.log("bindtextdomain('test', './') -> " + locale.bindtextdomain("test", "./"));
-	console.log("textdomain('test') -> " + locale.textdomain("test"));
-	console.log("gettext('hello test') -> " + locale.gettext("hello test"));
+	//console.log("textdomain('test') -> " + locale.textdomain("test"));
+	//console.log("gettext('hello test') -> " + locale.gettext("hello test"));
+	// instead of the 2 above lines you could just..
+	console.log("dgettext('test', 'hello test') -> " + locale.dgettext("test", "hello test"));
 } catch (e) {
 	console.log("Exception: " + e.message);
 }
