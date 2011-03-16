@@ -7,6 +7,7 @@
 #include <node.h>
 #include <stdlib.h>
 #include <math.h>
+#include <libintl.h>
 #include <locale.h>
 #include <monetary.h>
 #include <time.h>
@@ -50,6 +51,81 @@ static Handle<Value> node_setlocale(const Arguments& args) {
 		return scope.Close(Boolean::New(false));
 	}
 	return scope.Close(Boolean::New(true));
+}
+
+/**
+ * bindtextdomain(domain, path)
+ *
+ * Sets the <path> for a given text <domain>.
+ *
+ **/
+static Handle<Value> node_bindtextdomain(const Arguments& args) {
+	HandleScope scope;
+
+	if (args.Length() < 2) {
+		return ThrowException(Exception::TypeError(String::New("Missing argument")));
+	}
+	if (!args[0]->IsString()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 1 must be a domain string")));
+	}
+	if (!args[1]->IsString()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 2 must be the domain path")));
+	}
+
+	String::Utf8Value domain(args[0]->ToString());
+	String::Utf8Value path(args[1]->ToString());
+
+	if (bindtextdomain(*domain, *path) == NULL) {
+		return scope.Close(Boolean::New(false));
+	}
+
+	return scope.Close(Boolean::New(true));
+}
+
+/**
+ * textdomain(domain)
+ *
+ * Sets the current text <domain>.
+ *
+ **/
+static Handle<Value> node_textdomain(const Arguments& args) {
+	HandleScope scope;
+
+	if (args.Length() < 1) {
+		return ThrowException(Exception::TypeError(String::New("Missing argument")));
+	}
+	if (!args[0]->IsString()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 1 must be a domain string")));
+	}
+
+	String::Utf8Value domain(args[0]->ToString());
+
+	if (textdomain(*domain) == NULL) {
+		return scope.Close(Boolean::New(false));
+	}
+
+	return scope.Close(Boolean::New(true));
+}
+
+/**
+ * gettext(text)
+ *
+ * Get converted <text>.
+ *
+ **/
+static Handle<Value> node_gettext(const Arguments& args) {
+	HandleScope scope;
+
+	if (args.Length() < 1) {
+		return ThrowException(Exception::TypeError(String::New("Missing argument")));
+	}
+	if (!args[0]->IsString()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 1 must be a string")));
+	}
+
+	String::Utf8Value text(args[0]->ToString());
+
+	return scope.Close(String::New(gettext(*text)));
 }
 
 /**
@@ -201,6 +277,9 @@ void Init(Handle<Object> target) {
 	NODE_DEFINE_CONSTANT(target, LC_MESSAGES);
 
 	NODE_SET_METHOD(target, "setlocale", node_setlocale);
+	NODE_SET_METHOD(target, "bindtextdomain", node_bindtextdomain);
+	NODE_SET_METHOD(target, "textdomain", node_textdomain);
+	NODE_SET_METHOD(target, "gettext", node_gettext);
 	NODE_SET_METHOD(target, "strfmon", node_strfmon);
 	NODE_SET_METHOD(target, "strftime", node_strftime);
 	NODE_SET_METHOD(target, "strptime", node_strptime);
