@@ -6,15 +6,22 @@
 #include <v8.h>
 #include <node.h>
 #include <locale.h>
-//#include <monetary.h>
+#include <monetary.h>
 
 using namespace node;
 using namespace v8;
-	
+
+/**
+ * setlocale(type, locale)
+ *
+ * Change locale to <locale>. <type> can be LC_ALL or any other common
+ * locale type.
+ *
+ **/
 static Handle<Value> node_setlocale(const Arguments& args) {
 	HandleScope scope;
 	
-	if (args.Length() == 0) {
+	if (args.Length() < 2) {
 		return ThrowException(Exception::TypeError(String::New("Missing argument")));
 	}
 	
@@ -27,9 +34,30 @@ static Handle<Value> node_setlocale(const Arguments& args) {
 	return scope.Close(Boolean::New(true));
 }
 
-void Init(Handle<Object> target) {
+/**
+ * strfmon(format, value)
+ *
+ * Format monetary <value> using <format> specification.
+ **/
+static Handle<Value> node_strfmon(const Arguments& args) {
 	HandleScope scope;
 	
+	if (args.Length() < 2) {
+		return ThrowException(Exception::TypeError(String::New("Missing argument")));
+	}
+	
+	String::Utf8Value format(args[0]->ToString());
+	double value = args[1]->NumberValue();
+	char string[100];
+	
+	strfmon(string, 100, *format, value);
+	
+	return scope.Close(String::New(string));
+}
+
+void Init(Handle<Object> target) {
+	HandleScope scope;
+
 	NODE_DEFINE_CONSTANT(target, LC_ALL);
 	NODE_DEFINE_CONSTANT(target, LC_COLLATE);
 	NODE_DEFINE_CONSTANT(target, LC_CTYPE);
@@ -37,8 +65,9 @@ void Init(Handle<Object> target) {
 	NODE_DEFINE_CONSTANT(target, LC_NUMERIC);
 	NODE_DEFINE_CONSTANT(target, LC_TIME);
 	NODE_DEFINE_CONSTANT(target, LC_MESSAGES);
-	
+
 	NODE_SET_METHOD(target, "setlocale", node_setlocale);
+	NODE_SET_METHOD(target, "strfmon", node_strfmon);
 }
 
 NODE_MODULE(locale, Init);

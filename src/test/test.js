@@ -14,6 +14,7 @@ try {
 	} else {
 		console.log(lang + " locale set.");
 	}
+	console.log("monetary value " + val + " in " + lang + " is " + locale.strfmon("%i", val));
 } catch (e) {
 	console.log("Exception: " + e.message);
 }
