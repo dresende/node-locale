@@ -47,6 +47,12 @@ static Handle<Value> node_strfmon(const Arguments& args) {
 	if (args.Length() < 2) {
 		return ThrowException(Exception::TypeError(String::New("Missing argument")));
 	}
+	if (!args[0]->IsString()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 1 must be a string representing monetary format")));
+	}
+	if (!args[1]->IsDate() && !args[1]->IsNumber()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 2 must be a numeric value")));
+	}
 	
 	String::Utf8Value format(args[0]->ToString());
 	double value = args[1]->NumberValue();
@@ -67,6 +73,9 @@ static Handle<Value> node_strftime(const Arguments& args) {
 	
 	if (args.Length() < 2) {
 		return ThrowException(Exception::TypeError(String::New("Missing argument")));
+	}
+	if (!args[0]->IsString()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 1 must be a string representing date/time format")));
 	}
 	if (!args[1]->IsDate() && !args[1]->IsNumber()) {
 		return ThrowException(Exception::TypeError(String::New("Argument 2 must be a numeric or a date value")));
