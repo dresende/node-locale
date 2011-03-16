@@ -25,8 +25,8 @@ go to `src` folder and type:
 
 ### locale.setlocale(type, locale)
 
-Change current locale to `locale` (ie. "en\_US"). `type` should be one of `locale.LC\_ALL`,
-`locale.LC\_MONETARY`, etc..
+Change current locale to `locale` (ie. "en\_US"). `type` should be one of `locale.LC_ALL`,
+`locale.LC_MONETARY`, etc..
 
 ### locale.strfmon(format, value)
 
