@@ -1,5 +1,8 @@
 var locale = require("locale"),
-    lang = "pt_PT.utf8", val = 1234.56, dt = new Date(1999, 11, 31, 23, 59, 59, 0);
+    lang = "pt_PT.utf8",
+    val = 1234.56,
+    dt = new Date(1999, 11, 31, 23, 59, 59, 0),
+    dts = "12/25/93 13:30:00";
 
 try {
 	// this will break..
@@ -17,6 +20,9 @@ try {
 	console.log("monetary value " + val + " is '" + locale.strfmon("%i", val) + "'");
 	console.log("date value '" + dt + "' is '" + locale.strftime("%A, %b %d %Y %H:%M:%S", dt.getTime()) + "' (using Unix timestamp in miliseconds)");
 	console.log("date value '" + dt + "' is '" + locale.strftime("%A, %b %d %Y %H:%M:%S", dt) + "' (using Date object)");
+
+	console.log("date '" + dts + "' converted with strptime():");
+	console.dir(locale.strptime(dts, "%D %T"));
 } catch (e) {
 	console.log("Exception: " + e.message);
 }

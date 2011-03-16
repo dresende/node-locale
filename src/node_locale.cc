@@ -93,6 +93,45 @@ static Handle<Value> node_strftime(const Arguments& args) {
 	return scope.Close(String::New(string));
 }
 
+/**
+ * strptime(string, format)
+ *
+ * Convert date in <string> using <format> specification to a Date object.
+ **/
+static Handle<Value> node_strptime(const Arguments& args) {
+	HandleScope scope;
+
+	if (args.Length() < 2) {
+		return ThrowException(Exception::TypeError(String::New("Missing argument")));
+	}
+	if (!args[0]->IsString()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 1 must be a string representing a date/time")));
+	}
+	if (!args[1]->IsString()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 2 must be a string representing the previous date/time format")));
+	}
+
+	String::Utf8Value str(args[0]->ToString());
+	String::Utf8Value format(args[1]->ToString());
+	struct tm ts;
+
+	if (strptime(*str, *format, &ts) == NULL) {
+		return scope.Close(Boolean::New(false));
+	}
+
+	static Local<Object> obj = Object::New();
+	obj->Set(String::New("tm_sec"), Number::New(ts.tm_sec));
+	obj->Set(String::New("tm_min"), Number::New(ts.tm_min));
+	obj->Set(String::New("tm_hour"), Number::New(ts.tm_hour));
+	obj->Set(String::New("tm_mday"), Number::New(ts.tm_mday));
+	obj->Set(String::New("tm_mon"), Number::New(ts.tm_mon));
+	obj->Set(String::New("tm_year"), Number::New(ts.tm_year));
+	obj->Set(String::New("tm_wday"), Number::New(ts.tm_wday));
+	obj->Set(String::New("tm_yday"), Number::New(ts.tm_yday));
+
+	return scope.Close(obj);
+}
+
 void Init(Handle<Object> target) {
 	HandleScope scope;
 
@@ -107,6 +146,7 @@ void Init(Handle<Object> target) {
 	NODE_SET_METHOD(target, "setlocale", node_setlocale);
 	NODE_SET_METHOD(target, "strfmon", node_strfmon);
 	NODE_SET_METHOD(target, "strftime", node_strftime);
+	NODE_SET_METHOD(target, "strptime", node_strptime);
 }
 
 NODE_MODULE(locale, Init);
