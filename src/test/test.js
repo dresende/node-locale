@@ -1,5 +1,5 @@
 var locale = require("locale"),
-    lang = "pt_PT.utf8", val = 1234.56;
+    lang = "pt_PT.utf8", val = 1234.56, dt = new Date(1999, 11, 31, 23, 59, 59, 0);
 
 try {
 	// this will break..
@@ -9,12 +9,14 @@ try {
 }
 
 try {
-	if (locale.setlocale(locale.LC_MONETARY, lang) === false) {
+	if (locale.setlocale(locale.LC_ALL, lang) === false) {
 		console.log(lang + " locale is not installed in your system..");
 	} else {
 		console.log(lang + " locale set.");
 	}
-	console.log("monetary value " + val + " in " + lang + " is " + locale.strfmon("%i", val));
+	console.log("monetary value " + val + " is '" + locale.strfmon("%i", val) + "'");
+	console.log("date value '" + dt + "' is '" + locale.strftime("%A, %b %d %Y %H:%M:%S", dt.getTime()) + "' (using Unix timestamp in miliseconds)");
+	console.log("date value '" + dt + "' is '" + locale.strftime("%A, %b %d %Y %H:%M:%S", dt) + "' (using Date object)");
 } catch (e) {
 	console.log("Exception: " + e.message);
 }

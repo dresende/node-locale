@@ -5,8 +5,10 @@
 
 #include <v8.h>
 #include <node.h>
+#include <math.h>
 #include <locale.h>
 #include <monetary.h>
+#include <time.h>
 
 using namespace node;
 using namespace v8;
@@ -55,6 +57,33 @@ static Handle<Value> node_strfmon(const Arguments& args) {
 	return scope.Close(String::New(string));
 }
 
+/**
+ * strftime(format, date)
+ *
+ * Format date <date> using <format> specification.
+ **/
+static Handle<Value> node_strftime(const Arguments& args) {
+	HandleScope scope;
+	
+	if (args.Length() < 2) {
+		return ThrowException(Exception::TypeError(String::New("Missing argument")));
+	}
+	if (!args[1]->IsDate() && !args[1]->IsNumber()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 2 must be a numeric or a date value")));
+	}
+	
+	String::Utf8Value format(args[0]->ToString());
+	time_t ts = (time_t) floor(args[1]->NumberValue() / 1000);
+	struct tm *timeptr;
+	char string[100];
+
+	timeptr = localtime(&ts);
+
+	strftime(string, 100, *format, timeptr);
+
+	return scope.Close(String::New(string));
+}
+
 void Init(Handle<Object> target) {
 	HandleScope scope;
 
@@ -68,6 +97,7 @@ void Init(Handle<Object> target) {
 
 	NODE_SET_METHOD(target, "setlocale", node_setlocale);
 	NODE_SET_METHOD(target, "strfmon", node_strfmon);
+	NODE_SET_METHOD(target, "strftime", node_strftime);
 }
 
 NODE_MODULE(locale, Init);
