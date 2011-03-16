@@ -5,6 +5,7 @@
 
 #include <v8.h>
 #include <node.h>
+#include <stdlib.h>
 #include <math.h>
 #include <locale.h>
 #include <monetary.h>
@@ -12,6 +13,21 @@
 
 using namespace node;
 using namespace v8;
+
+/**
+ * Helper function to strftime()
+ **/
+char* node_locale_strftime_hw(const char* format, double value) {
+	time_t ts = (time_t) floor(value / 1000);
+	struct tm *timeptr;
+	char* ret = (char *)malloc(100);
+
+	timeptr = localtime(&ts);
+
+	strftime(ret, 100, format, timeptr);
+
+	return ret;
+}
 
 /**
  * setlocale(type, locale)
@@ -80,17 +96,10 @@ static Handle<Value> node_strftime(const Arguments& args) {
 	if (!args[1]->IsDate() && !args[1]->IsNumber()) {
 		return ThrowException(Exception::TypeError(String::New("Argument 2 must be a numeric or a date value")));
 	}
-	
+
 	String::Utf8Value format(args[0]->ToString());
-	time_t ts = (time_t) floor(args[1]->NumberValue() / 1000);
-	struct tm *timeptr;
-	char string[100];
 
-	timeptr = localtime(&ts);
-
-	strftime(string, 100, *format, timeptr);
-
-	return scope.Close(String::New(string));
+	return scope.Close(String::New(node_locale_strftime_hw(*format, args[1]->NumberValue())));
 }
 
 /**
@@ -132,6 +141,54 @@ static Handle<Value> node_strptime(const Arguments& args) {
 	return scope.Close(obj);
 }
 
+/**
+ * monthname(date[, abbreviated = false])
+ *
+ * Get month name in current locale, for specified <date>. If <abbreviated>
+ * is passed as true, it will return the abbreviated name.
+ **/
+static Handle<Value> node_monthname(const Arguments& args) {
+	HandleScope scope;
+
+	if (args.Length() == 0) {
+		return ThrowException(Exception::TypeError(String::New("Missing argument")));
+	}
+	if (!args[0]->IsDate() && !args[0]->IsNumber()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 1 must be a numeric or a date value")));
+	}
+	if (args.Length() > 1 && !args[1]->IsBoolean()) {
+		return ThrowException(Exception::TypeError(String::New("Optional argument 2 must be a boolean")));
+	}
+
+	String::Utf8Value format(String::New(args.Length() > 1 && args[1]->ToBoolean()->Value() ? "%b" : "%B"));
+
+	return scope.Close(String::New(node_locale_strftime_hw(*format, args[0]->NumberValue())));
+}
+
+/**
+ * weekdayname(date[, abbreviated = false])
+ *
+ * Get weekday name in current locale, for specified <date>. If <abbreviated>
+ * is passed as true, it will return the abbreviated name.
+ **/
+static Handle<Value> node_weekdayname(const Arguments& args) {
+	HandleScope scope;
+
+	if (args.Length() == 0) {
+		return ThrowException(Exception::TypeError(String::New("Missing argument")));
+	}
+	if (!args[0]->IsDate() && !args[0]->IsNumber()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 1 must be a numeric or a date value")));
+	}
+	if (args.Length() > 1 && !args[1]->IsBoolean()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 2 must be a boolean")));
+	}
+
+	String::Utf8Value format(String::New(args.Length() > 1 && args[1]->ToBoolean()->Value() ? "%a" : "%A"));
+
+	return scope.Close(String::New(node_locale_strftime_hw(*format, args[0]->NumberValue())));
+}
+
 void Init(Handle<Object> target) {
 	HandleScope scope;
 
@@ -147,6 +204,8 @@ void Init(Handle<Object> target) {
 	NODE_SET_METHOD(target, "strfmon", node_strfmon);
 	NODE_SET_METHOD(target, "strftime", node_strftime);
 	NODE_SET_METHOD(target, "strptime", node_strptime);
+	NODE_SET_METHOD(target, "monthname", node_monthname);
+	NODE_SET_METHOD(target, "weekdayname", node_weekdayname);
 }
 
 NODE_MODULE(locale, Init);

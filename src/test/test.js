@@ -20,6 +20,10 @@ try {
 	console.log("monetary value " + val + " is '" + locale.strfmon("%i", val) + "'");
 	console.log("date value '" + dt + "' is '" + locale.strftime("%A, %b %d %Y %H:%M:%S", dt.getTime()) + "' (using Unix timestamp in miliseconds)");
 	console.log("date value '" + dt + "' is '" + locale.strftime("%A, %b %d %Y %H:%M:%S", dt) + "' (using Date object)");
+	console.log("date value '" + dt + "' month name is '" + locale.monthname(dt) + "'");
+	console.log("date value '" + dt + "' month name is '" + locale.monthname(dt, true) + "' (abbreviated)");
+	console.log("date value '" + dt + "' weekday name is '" + locale.weekdayname(dt) + "'");
+	console.log("date value '" + dt + "' weekday name is '" + locale.weekdayname(dt, true) + "' (abbreviated)");
 
 	console.log("date '" + dts + "' converted with strptime():");
 	console.dir(locale.strptime(dts, "%D %T"));
