@@ -28,6 +28,21 @@ go to `src` folder and type:
 Change current locale to `locale` (ie. "en\_US"). `type` should be one of `locale.LC_ALL`,
 `locale.LC_MONETARY`, etc..
 
+### locale.bindtextdomain(domain, path)
+
+Set the base `path` for a text `domain`. This path should have a child folder with
+the name of the locale in use. This child folder should have another child folder
+called `LC_MESSAGES` with a _pot_ file called `domain.po`.
+
+### locale.textdomain(domain)
+
+Prepare to use a specific `domain`.
+
+### locale.gettext(text)
+
+Translate `text` using current domain text. This text should have a `msgid` correspondence
+in you message files. Otherwise it will return `text` unmodified.
+
 ### locale.strfmon(format, value)
 
 Return `value` formatted as a monetary value, based on current locale. `format` is a string
