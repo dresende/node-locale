@@ -37,6 +37,14 @@ try {
 	for (var n = 0; n <= 3; n++) {
 		console.log("dngettext('test', 'hello %s test', 'hello %s tests', "+n+") -> " + locale.dngettext("test", "hello %d test", "hello %d tests", n).replace("%d", n), '%d', '%d');
 	}
+
+	console.log("ctype.isalpha('a') -> " + locale.ctype.isalpha("a"));
+	console.log("ctype.isalpha('A') -> " + locale.ctype.isalpha("A"));
+	console.log("ctype.isalpha('9') -> " + locale.ctype.isalpha("9"));
+	console.log("ctype.isalpha('-') -> " + locale.ctype.isalpha("-"));
+	console.log("ctype.isalpha(5) -> " + locale.ctype.isalpha(5));
+	console.log("ctype.isxdigit('B') -> " + locale.ctype.isxdigit("B"));
+	console.log("ctype.isxdigit('G') -> " + locale.ctype.isxdigit("G"));
 } catch (e) {
 	console.log("Exception: " + e.message);
 }

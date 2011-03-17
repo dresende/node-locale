@@ -11,6 +11,7 @@
 #include <locale.h>
 #include <monetary.h>
 #include <time.h>
+#include "node_locale_ctype.h"
 
 using namespace node;
 using namespace v8;
@@ -388,6 +389,16 @@ void Init(Handle<Object> target) {
 	NODE_SET_METHOD(target, "strptime", node_strptime);
 	NODE_SET_METHOD(target, "monthname", node_monthname);
 	NODE_SET_METHOD(target, "weekdayname", node_weekdayname);
+
+	Handle<Object> o = Object::New();
+	NODE_SET_METHOD(o, "isalpha", node_ctype_isalpha);
+	NODE_SET_METHOD(o, "isalnum", node_ctype_isalnum);
+	NODE_SET_METHOD(o, "isdigit", node_ctype_isdigit);
+	NODE_SET_METHOD(o, "isxdigit", node_ctype_isxdigit);
+	NODE_SET_METHOD(o, "isspace", node_ctype_isspace);
+	NODE_SET_METHOD(o, "isblank", node_ctype_isblank);
+
+	target->Set(String::New("ctype"), o);
 }
 
 NODE_MODULE(locale, Init);
