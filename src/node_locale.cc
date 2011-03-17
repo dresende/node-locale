@@ -40,10 +40,18 @@ char* node_locale_strftime_hw(const char* format, double value) {
 static Handle<Value> node_setlocale(const Arguments& args) {
 	HandleScope scope;
 	
-	if (args.Length() < 2) {
+	if (args.Length() < 1) {
 		return ThrowException(Exception::TypeError(String::New("Missing argument")));
 	}
 	
+	if (args.Length() == 1) {
+		char *locale;
+		if ((locale = setlocale(args[0]->Uint32Value(), NULL)) == NULL) {
+			return scope.Close(Boolean::New(false));
+		}
+		return scope.Close(String::New(locale));
+	}
+
 	int lc_type = args[0]->Uint32Value();
 	String::Utf8Value locale(args[1]->ToString());
 	

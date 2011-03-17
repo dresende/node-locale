@@ -5,8 +5,8 @@ var locale = require("locale"),
     dts = "12/25/93 13:30:00";
 
 try {
-	// this will break..
-	locale.setlocale();
+	// get current locale
+	console.log("current locale: " + locale.setlocale(locale.LC_ALL));
 } catch (e) {
 	console.log("setlocale() exception: " + e.message);
 }
