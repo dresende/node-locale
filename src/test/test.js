@@ -28,7 +28,7 @@ try {
 	console.log("date '" + dts + "' converted with strptime():");
 	console.dir(locale.strptime(dts, "%D %T"));
 
-	console.log("bindtextdomain('test', './') -> " + locale.bindtextdomain("test", "./"));
+	console.log("bindtextdomain('test', './') -> " + locale.bindtextdomain("test", __dirname + "/"));
 	//console.log("textdomain('test') -> " + locale.textdomain("test"));
 	//console.log("gettext('hello test') -> " + locale.gettext("hello test"));
 	// instead of the 2 above lines you could just..
