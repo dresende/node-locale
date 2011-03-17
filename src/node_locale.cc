@@ -99,8 +99,13 @@ static Handle<Value> node_bindtextdomain(const Arguments& args) {
 static Handle<Value> node_textdomain(const Arguments& args) {
 	HandleScope scope;
 
-	if (args.Length() < 1) {
-		return ThrowException(Exception::TypeError(String::New("Missing argument")));
+	if (args.Length() == 0) {
+		char *domain;
+		if ((domain = textdomain(NULL)) == NULL) {
+			return scope.Close(Boolean::New(false));
+		}
+
+		return scope.Close(String::New(domain));
 	}
 	if (!args[0]->IsString()) {
 		return ThrowException(Exception::TypeError(String::New("Argument 1 must be a domain string")));
