@@ -19,4 +19,4 @@ To use this module you just have to:
 
     var locale = require("locale");
 
-Check [[API]] for the list available functions.
+Check [API](https://github.com/dresende/node-locale/wiki/API) for the list available functions.
