@@ -154,6 +154,68 @@ static Handle<Value> node_dgettext(const Arguments& args) {
 }
 
 /**
+ * ngettext(text, plural_text, n)
+ *
+ * Convert <text> or <plural_text> based on <n> being plural or not.
+ *
+ **/
+static Handle<Value> node_ngettext(const Arguments& args) {
+	HandleScope scope;
+
+	if (args.Length() < 3) {
+		return ThrowException(Exception::TypeError(String::New("Missing argument")));
+	}
+	if (!args[0]->IsString()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 1 must be a string")));
+	}
+	if (!args[1]->IsString()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 2 must be a plural string")));
+	}
+	if (!args[2]->IsNumber()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 3 must be a numeric value")));
+	}
+
+	String::Utf8Value text(args[0]->ToString());
+	String::Utf8Value plural_text(args[1]->ToString());
+	unsigned long int n = args[2]->Uint32Value();
+
+	return scope.Close(String::New(ngettext(*text, *plural_text, n)));
+}
+
+/**
+ * dngettext(domain, text, plural_text, n)
+ *
+ * Using <domain>, convert <text> or <plural_text> based on <n> being plural or not.
+ *
+ **/
+static Handle<Value> node_dngettext(const Arguments& args) {
+	HandleScope scope;
+
+	if (args.Length() < 4) {
+		return ThrowException(Exception::TypeError(String::New("Missing argument")));
+	}
+	if (!args[0]->IsString()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 1 must be a domain string")));
+	}
+	if (!args[1]->IsString()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 2 must be a string")));
+	}
+	if (!args[2]->IsString()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 3 must be a plural string")));
+	}
+	if (!args[3]->IsNumber()) {
+		return ThrowException(Exception::TypeError(String::New("Argument 4 must be a numeric value")));
+	}
+
+	String::Utf8Value domain(args[0]->ToString());
+	String::Utf8Value text(args[1]->ToString());
+	String::Utf8Value plural_text(args[2]->ToString());
+	unsigned long int n = args[3]->Uint32Value();
+
+	return scope.Close(String::New(dngettext(*domain, *text, *plural_text, n)));
+}
+
+/**
  * strfmon(format, value)
  *
  * Format monetary <value> using <format> specification.
@@ -306,6 +368,8 @@ void Init(Handle<Object> target) {
 	NODE_SET_METHOD(target, "textdomain", node_textdomain);
 	NODE_SET_METHOD(target, "gettext", node_gettext);
 	NODE_SET_METHOD(target, "dgettext", node_dgettext);
+	NODE_SET_METHOD(target, "ngettext", node_ngettext);
+	NODE_SET_METHOD(target, "dngettext", node_dngettext);
 	NODE_SET_METHOD(target, "strfmon", node_strfmon);
 	NODE_SET_METHOD(target, "strftime", node_strftime);
 	NODE_SET_METHOD(target, "strptime", node_strptime);

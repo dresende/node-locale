@@ -33,6 +33,10 @@ try {
 	//console.log("gettext('hello test') -> " + locale.gettext("hello test"));
 	// instead of the 2 above lines you could just..
 	console.log("dgettext('test', 'hello test') -> " + locale.dgettext("test", "hello test"));
+	// try checking plural form based on n number
+	for (var n = 0; n <= 3; n++) {
+		console.log("dngettext('test', 'hello %s test', 'hello %s tests', "+n+") -> " + locale.dngettext("test", "hello %d test", "hello %d tests", n).replace("%d", n), '%d', '%d');
+	}
 } catch (e) {
 	console.log("Exception: " + e.message);
 }
