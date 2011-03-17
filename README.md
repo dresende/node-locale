@@ -1,16 +1,8 @@
 NodeJS Locale Bindings
 ======================
 
-The goal of this repo is to bind the common used functions from **locale.h**.
-
-The next code shows what you can do for now.
-
-    var locale = require("locale");
-    
-    if (locale.setlocale(locale.LC_ALL, "pt_PT.utf8")) {
-    	console.log("Monetary: " + locale.strfmon("%i", 1234.56));
-    	console.log("    Date: " + locale.strftime("%A, %b %d %Y %H:%M:%S", new Date()));
-    }
+The goal of this repo is to bind the common used functions from **locale.h**, **time.h**
+and **intl.h**. If you have more suggestions please post an issue.
 
 ## Installation
 
@@ -20,6 +12,12 @@ go to `src` folder and type:
     node-waf configure
     node-waf build
     node-waf install
+
+## Usage
+
+To use this module you just have to:
+
+    var locale = require("locale");
 
 ## API
 
