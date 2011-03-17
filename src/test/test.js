@@ -17,7 +17,7 @@ try {
 	} else {
 		console.log(lang + " locale set.");
 	}
-	console.log("monetary value " + val + " is '" + locale.strfmon("%i", val) + "'");
+	console.log("monetary value " + val + " is '" + locale.monetary.strfmon("%i", val) + "'");
 	console.log("date value '" + dt + "' is '" + locale.time.strftime("%A, %b %d %Y %H:%M:%S", dt.getTime()) + "' (using Unix timestamp in miliseconds)");
 	console.log("date value '" + dt + "' is '" + locale.time.strftime("%A, %b %d %Y %H:%M:%S", dt) + "' (using Date object)");
 	console.log("date value '" + dt + "' month name is '" + locale.time.monthname(dt) + "'");

@@ -9,9 +9,9 @@
 #include <math.h>
 #include <libintl.h>
 #include <locale.h>
-#include <monetary.h>
 #include "node_locale_ctype.h"
 #include "node_locale_time.h"
+#include "node_locale_monetary.h"
 
 using namespace node;
 using namespace v8;
@@ -214,33 +214,6 @@ static Handle<Value> node_dngettext(const Arguments& args) {
 	return scope.Close(String::New(dngettext(*domain, *text, *plural_text, n)));
 }
 
-/**
- * strfmon(format, value)
- *
- * Format monetary <value> using <format> specification.
- **/
-static Handle<Value> node_strfmon(const Arguments& args) {
-	HandleScope scope;
-	
-	if (args.Length() < 2) {
-		return ThrowException(Exception::TypeError(String::New("Missing argument")));
-	}
-	if (!args[0]->IsString()) {
-		return ThrowException(Exception::TypeError(String::New("Argument 1 must be a string representing monetary format")));
-	}
-	if (!args[1]->IsDate() && !args[1]->IsNumber()) {
-		return ThrowException(Exception::TypeError(String::New("Argument 2 must be a numeric value")));
-	}
-	
-	String::Utf8Value format(args[0]->ToString());
-	double value = args[1]->NumberValue();
-	char string[100];
-	
-	strfmon(string, 100, *format, value);
-	
-	return scope.Close(String::New(string));
-}
-
 void Init(Handle<Object> target) {
 	HandleScope scope;
 
@@ -259,7 +232,9 @@ void Init(Handle<Object> target) {
 	NODE_SET_METHOD(target, "dgettext", node_dgettext);
 	NODE_SET_METHOD(target, "ngettext", node_ngettext);
 	NODE_SET_METHOD(target, "dngettext", node_dngettext);
-	NODE_SET_METHOD(target, "strfmon", node_strfmon);
+
+	Handle<Object> o_monetary = Object::New();
+	NODE_SET_METHOD(o_monetary, "strfmon", node_strfmon);
 
 	Handle<Object> o_time = Object::New();
 	NODE_SET_METHOD(o_time, "strftime", node_strftime);
@@ -277,6 +252,7 @@ void Init(Handle<Object> target) {
 
 	target->Set(String::New("time"), o_time);
 	target->Set(String::New("ctype"), o_ctype);
+	target->Set(String::New("monetary"), o_monetary);
 }
 
 NODE_MODULE(locale, Init);
